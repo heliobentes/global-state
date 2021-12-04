@@ -1,6 +1,6 @@
 {
   "name": "@heliobentes/global-state",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Application-Wide State Management",
   "main": "index.js",
   "scripts": {

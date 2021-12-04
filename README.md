@@ -72,6 +72,26 @@ Your state will assume `value` for the first time the hook is called in your app
 const [loading, setLoading] = useGlobalState("page-loader", false, true);
 ```
 
+### Example
+```
+import React from 'react';
+import useGlobalState from "@heliobentes/global-state";
+
+function Example() {
+  // Declare a new state variable, which we'll call "count"
+  const [count, setCount] = useGlobalState("count",0);
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+
 
 ## Authors <a name = "authors"></a>
 
