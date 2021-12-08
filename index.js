@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-
+import React from "react";
+const { useEffect, useState } = React;
 /**
  * Set a globally/system-wide state without the use of Redux or any similar tools.\
  * Usage: const [counter, setCounter] = useGlobalState("counter", 0, false);
