@@ -19,7 +19,7 @@ function useGlobalState(stateId, value, forceNewState = false) {
     function setState(val) {
         if (typeof window !== undefined) {
             window.globalState[stateId] = val;
-            var event = new CustomEvent("setglobalstate");
+            var event = new CustomEvent(`setglobalstate-${stateId}`);
             event.value = val;
             window.dispatchEvent(event);
         }
@@ -34,7 +34,7 @@ function useGlobalState(stateId, value, forceNewState = false) {
 
     useEffect(() => {
         if (typeof window !== undefined) {
-            window.addEventListener("setglobalstate", handleGlobalStateChange);
+            window.addEventListener(`setglobalstate-${stateId}`, handleGlobalStateChange);
             
             if (!window.globalState) window.globalState = {};
             if (forceNewState) {
@@ -45,7 +45,7 @@ function useGlobalState(stateId, value, forceNewState = false) {
         }
         return () => {
             if (typeof window !== undefined) {
-                window.removeEventListener("setglobalstate", handleGlobalStateChange);
+                window.removeEventListener(`setglobalstate-${stateId}`, handleGlobalStateChange);
             }
         }
     }, []);
