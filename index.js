@@ -12,7 +12,7 @@ const { useEffect, useState } = React;
 function useGlobalState(stateId, value, forceNewState = false, windowRef = window) {
     //handling errors
     if (typeof stateId !== "string") throw new TypeError("Global State expects a string for stateId!");
-    if (forceNewState != undefined && typeof forceNewState !== "boolean") throw new TypeError("Global State expects a boolean for forceNewState!");
+    if (forceNewState !== undefined && typeof forceNewState !== "boolean") throw new TypeError("Global State expects a boolean for forceNewState!");
 
     const [state, changeState] = useState(undefined);
 
