@@ -6,9 +6,10 @@ const { useEffect, useState } = React;
  * @param {string} stateId The state identificatior. Must be the same on every component you use.
  * @param {any} value The initial state value. Can be any type.
  * @param {boolean} [forceNewState] Flag to reset and force the state to the initial state value. Useful when you need to reset the state on a new component rendering. Defaults to false.
+ * @param {object} [windowRef] The window object. Defaults to window. Use window.top for iframes.
  * @returns The current state value and a function to set the current state
  */
-function useGlobalState(stateId, value, forceNewState = false) {
+function useGlobalState(stateId, value, forceNewState = false, windowRef = window) {
     //handling errors
     if (typeof stateId !== "string") throw new TypeError("Global State expects a string for stateId!");
     if (forceNewState != undefined && typeof forceNewState !== "boolean") throw new TypeError("Global State expects a boolean for forceNewState!");
@@ -17,11 +18,11 @@ function useGlobalState(stateId, value, forceNewState = false) {
 
 
     function setState(val) {
-        if (typeof window !== undefined) {
-            window.globalState[stateId] = val;
+        if (typeof windowRef !== undefined) {
+            windowRef.globalState[stateId] = val;
             var event = new CustomEvent(`setglobalstate-${stateId}`);
             event.value = val;
-            window.dispatchEvent(event);
+            windowRef.dispatchEvent(event);
         }
     }
 
@@ -33,19 +34,19 @@ function useGlobalState(stateId, value, forceNewState = false) {
     }
 
     useEffect(() => {
-        if (typeof window !== undefined) {
-            window.addEventListener(`setglobalstate-${stateId}`, handleGlobalStateChange);
+        if (typeof windowRef !== undefined) {
+            windowRef.addEventListener(`setglobalstate-${stateId}`, handleGlobalStateChange);
             
-            if (!window.globalState) window.globalState = {};
+            if (!windowRef.globalState) windowRef.globalState = {};
             if (forceNewState) {
                 setState(value);
             } else {
-                setState(window.globalState[stateId] !== undefined ? window.globalState[stateId] : value);
+                setState(windowRef.globalState[stateId] !== undefined ? windowRef.globalState[stateId] : value);
             }
         }
         return () => {
-            if (typeof window !== undefined) {
-                window.removeEventListener(`setglobalstate-${stateId}`, handleGlobalStateChange);
+            if (typeof windowRef !== undefined) {
+                windowRef.removeEventListener(`setglobalstate-${stateId}`, handleGlobalStateChange);
             }
         }
     }, []);
