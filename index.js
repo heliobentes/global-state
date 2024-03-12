@@ -16,12 +16,27 @@ function useGlobalState(stateId, value, forceNewState = false) {
     const [state, changeState] = useState(undefined);
 
 
+    const getWindow = () => {
+        if (typeof window !== "undefined") {
+            try {
+                window.top.addEventListener('check-top-window',()=>{});
+                return window.top;
+            }   catch (e) {
+                console.log("ERROR",e);
+                return window;
+            }
+        }
+        return null;
+    }
+
+
     function setState(val) {
-        if (typeof window !== undefined) {
-            window.top.globalState[stateId] = val;
+        const window = getWindow();
+        if (window) {
+            window.globalState[stateId] = val;
             var event = new CustomEvent(`setglobalstate-${stateId}`);
             event.value = val;
-            window.top.dispatchEvent(event);
+            window.dispatchEvent(event);
         }
     }
 
@@ -33,19 +48,20 @@ function useGlobalState(stateId, value, forceNewState = false) {
     }
 
     useEffect(() => {
-        if (typeof window !== undefined) {
-            window.top.addEventListener(`setglobalstate-${stateId}`, handleGlobalStateChange);
-            
-            if (!window.top.globalState) window.top.globalState = {};
+        const window = getWindow();
+        if (window) {
+            window.addEventListener(`setglobalstate-${stateId}`, handleGlobalStateChange);
+
+            if (!window.globalState) window.globalState = {};
             if (forceNewState) {
                 setState(value);
             } else {
-                setState(window.top.globalState[stateId] !== undefined ? window.top.globalState[stateId] : value);
+                setState(window.globalState[stateId] !== undefined ? window.globalState[stateId] : value);
             }
         }
         return () => {
-            if (typeof window !== undefined) {
-                window.top.removeEventListener(`setglobalstate-${stateId}`, handleGlobalStateChange);
+            if (window) {
+                window.removeEventListener(`setglobalstate-${stateId}`, handleGlobalStateChange);
             }
         }
     }, []);
