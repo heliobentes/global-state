@@ -33,9 +33,12 @@ function useGlobalState(stateId, value, forceNewState = false) {
     function setState(val) {
         const window = getWindow();
         if (window) {
-            window.globalState[stateId] = val;
+            // this condition is to make sure calls like setState(current = > current + 1) works
+            // window.globalState[stateId] works like the current state
+            const newValue = typeof val === "function" ? val(window.globalState[stateId]) : val;
+            window.globalState[stateId] = newValue;
             var event = new CustomEvent(`setglobalstate-${stateId}`);
-            event.value = val;
+            event.value = newValue;
             window.dispatchEvent(event);
         }
     }
