@@ -46,7 +46,7 @@ function useGlobalState(stateId, value, forceNewState = false) {
     function handleGlobalStateChange(e) {
         const newVal = e.value !== undefined ? e.value : value;
         if (newVal !== state) {
-            changeState(newVal);
+            changeState(() => newVal);
         }
     }
 
